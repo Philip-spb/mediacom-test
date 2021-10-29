@@ -27,14 +27,20 @@ class DepartmentSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     current_department_id = serializers.IntegerField(required=False, label='ID департамента')
     current_department = serializers.SerializerMethodField(read_only=True, required=False, label='ID департамента')
+    total_projects = serializers.SerializerMethodField(read_only=True, required=False, label='Количество проектов')
 
     class Meta:
         model = User
         fields = ('id', 'username', 'current_department_id', 'current_department', 'position', 'first_name',
-                  'last_name', 'patronymic', 'age', 'photo')
+                  'last_name', 'patronymic', 'age', 'photo', 'total_projects')
 
     def get_current_department(self, obj):
         response = None
         if obj.current_department:
             response = obj.current_department.name
         return response
+
+    def get_total_projects(self, obj):
+        projects = obj.all_employees.count()
+
+        return projects

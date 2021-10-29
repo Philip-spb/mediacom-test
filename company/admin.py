@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.db.models import Q
 
-from company.models import User, Department
+from company.models import User, Department, CompanyProject
 
 
 @admin.register(User)
@@ -47,5 +47,13 @@ class CompanyAdmin(admin.ModelAdmin):
     list_display = ('pk', 'name', 'director',)
     list_display_links = ('pk', 'name',)
     search_fields = ('name',)
+
+    save_on_top = True
+
+
+@admin.register(CompanyProject)
+class CompanyProjectAdmin(admin.ModelAdmin):
+    list_display = ('pk', 'name', 'department', 'admin',)
+    list_display_links = ('pk', 'name', 'department',)
 
     save_on_top = True

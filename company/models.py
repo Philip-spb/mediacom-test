@@ -65,3 +65,14 @@ class Department(models.Model):
         Суммарный оклад всех сотрудников департамента
         """
         return User.objects.filter(current_department=self).aggregate(sum=Sum('salary')).get('sum', None)
+
+
+class CompanyProject(models.Model):
+    name = models.CharField(max_length=64, verbose_name='Название проекта', unique=True)
+    department = models.ForeignKey(Department, on_delete=models.SET_NULL, verbose_name='Департамент',
+                                   blank=True, null=True)
+    admin = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, blank=True, null=True,
+                                 verbose_name='Руководитель', related_name='project_admin')
+    employees = models.ManyToManyField(settings.AUTH_USER_MODEL, verbose_name='Участники', related_name='all_employees')
+
+
