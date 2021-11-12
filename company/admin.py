@@ -39,8 +39,17 @@ class CustomUserAdmin(UserAdmin):
 @admin.register(Department)
 class CompanyAdmin(admin.ModelAdmin):
 
+    @staticmethod
+    def get_users(**kwargs) -> User:
+        users = User.objects.filter(Q(current_department__isnull=True))
+
+        if kwargs['obj']:
+            users |= User.objects.filter(Q(current_department=kwargs['obj'].pk))
+
+        return users
+
     def render_change_form(self, request, context, *args, **kwargs):
-        users = User.objects.filter(Q(current_department__isnull=True) | Q(current_department=kwargs['obj'].pk))
+        users = self.get_users(**kwargs)
         context['adminform'].form.fields['director'].queryset = users
         return super(CompanyAdmin, self).render_change_form(request, context, *args, **kwargs)
 

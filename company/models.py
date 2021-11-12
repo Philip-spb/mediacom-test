@@ -3,7 +3,7 @@ from django.conf import settings
 from django.db import models
 from datetime import date
 from django.contrib.auth.models import AbstractUser
-from django.db.models import Sum
+from django.db.models import Sum, Q
 
 
 class User(AbstractUser):
@@ -48,6 +48,9 @@ class Department(models.Model):
         verbose_name = 'Департамент'
         verbose_name_plural = 'Департаменты'
         ordering = ['pk']
+        constraints = [
+            models.CheckConstraint(check=Q(name__contains='петя'), name='department_name'),
+        ]
 
     def __str__(self):
         return self.name
@@ -72,7 +75,5 @@ class CompanyProject(models.Model):
     department = models.ForeignKey(Department, on_delete=models.SET_NULL, verbose_name='Департамент',
                                    blank=True, null=True)
     admin = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, blank=True, null=True,
-                                 verbose_name='Руководитель', related_name='project_admin')
+                              verbose_name='Руководитель', related_name='project_admin')
     employees = models.ManyToManyField(settings.AUTH_USER_MODEL, verbose_name='Участники', related_name='all_employees')
-
-
