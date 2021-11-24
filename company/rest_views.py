@@ -3,6 +3,9 @@ from rest_framework import viewsets
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.permissions import IsAuthenticated, AllowAny
 
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.filters import OrderingFilter
+
 from company.models import Department, User
 from company.serializers import DepartmentSerializer, UserSerializer
 
@@ -32,6 +35,7 @@ class UserMVS(viewsets.ModelViewSet):
           required: False
           type: integer
     """
+    filter_backends = (DjangoFilterBackend, OrderingFilter,)
     filterset_class = UserFilter
     permission_classes = (IsAuthenticated,)
     http_method_names = ['delete', 'post', 'get']
